@@ -31,12 +31,6 @@ type
     Label2: TLabel;
     BitBtn9: TBitBtn;
     DBEdtJSname: TDBEdit;
-    GroupBox1: TGroupBox;
-    Panel3: TPanel;
-    CheckListBox1: TCheckListBox;
-    BitBtn12: TBitBtn;
-    BitBtn13: TBitBtn;
-    Edit1: TEdit;
     PopupMenu1: TPopupMenu;
     N1: TMenuItem;
     N2: TMenuItem;
@@ -44,10 +38,8 @@ type
     CheckListBox2: TCheckListBox;
     GroupBox2: TGroupBox;
     DBLookupComboBox1: TDBLookupComboBox;
-    PopupMenu2: TPopupMenu;
-    N4: TMenuItem;
-    N5: TMenuItem;
-    N6: TMenuItem;
+    BitBtn1: TBitBtn;
+    CheckListBox1: TCheckListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure BitBtn9Click(Sender: TObject);
@@ -60,12 +52,12 @@ type
     procedure ADOQuery_jsAfterOpen(DataSet: TDataSet);
     procedure ADOQuery_zyAfterOpen(DataSet: TDataSet);
     procedure ComboBox1Change(Sender: TObject);
-    procedure BitBtn12Click(Sender: TObject);
-    procedure BitBtn13Click(Sender: TObject);
     procedure CheckListBox1ClickCheck(Sender: TObject);
     procedure N2Click(Sender: TObject);
     procedure CheckListBox2ClickCheck(Sender: TObject);
-    procedure N6Click(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
+    procedure N3Click(Sender: TObject);
+    procedure N1Click(Sender: TObject);
   private
     { Private declarations }
     function GETMAXMENUBM: STRING;
@@ -192,38 +184,6 @@ begin
   MakeCombinChecklistbox_JS;
 end;
 
-procedure TfrmPower.BitBtn9Click(Sender: TObject);
-begin
-  ADOquery_js.Edit;
-  ADOquery_js.Append;
-  dbedtJSname.SetFocus;
-end;
-
-procedure TfrmPower.DBEdtJSnameKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if pos('+',tedit(sender).Text)<>0 then
-  begin
-      messagedlg('非法字符("+")',mtinformation,[mbok],0);
-    ADOquery_js.Cancel;
-    tedit(sender).SetFocus;
-    exit;
-  end;
-
-  if key=13 then
-  begin
-    if trim(tedit(sender).text)='' then exit;
-    try
-      ADOquery_js.Edit;
-      ADOquery_js.Post;
-    except
-      messagedlg('该角色已存在！',mtinformation,[mbok],0);
-      ADOquery_js.Cancel;
-      tedit(sender).SetFocus;
-    end;
-  end;
-end;
-
 procedure TfrmPower.DBLookupComboBox1Click(Sender: TObject);
 begin
   if trim(DBLookupComboBox1.Text)='' then exit;
@@ -287,54 +247,6 @@ begin
   CheckTheListBox;
 end;
 
-procedure TfrmPower.BitBtn12Click(Sender: TObject);
-var
-  adotemp11:tadoquery;
-  sqlstr,bm:string;
-begin
-  adotemp11:=tadoquery.Create(nil);
-  adotemp11.Connection:=ADOConnection1;
-  if true then //新增
-  begin
-    //ifNewAddMenu:=false;
-    bm:=GETMAXMENUBM;
-    sqlstr:='Insert into menuitem ('+
-                        ' bm,menuname,SYSNAME) values ('+
-                        ' :P_bm,:P_menuname,:SYSNAME) ';
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Add(sqlstr);
-    adotemp11.Parameters.ParamByName('P_bm').Value:=bm;
-    adotemp11.Parameters.ParamByName('P_menuname').Value:=trim(Edit1.Text);
-    adotemp11.Parameters.ParamByName('SYSNAME').Value:=ComboBox1.Text;
-    adotemp11.ExecSQL;
-    //ADOQuery_power.Close;
-    //ADOQuery_power.Open;
-  end else //修改
-  begin
-    //IF ADOQuery_power.RecordCount=0 THEN
-    BEGIN
-      adotemp11.Free;
-      SHOWMESSAGE('没有记录供你修改，若要新增，请先点击"新增按钮"！');
-      EXIT;
-    END;
-    //bm:=trim(ADOQuery_power.fieldbyname('权限编号').AsString);
-
-    adotemp11.Close;
-    adotemp11.SQL.Clear;
-    adotemp11.SQL.Text:=' Update menuitem  '+
-    '  set menuname=:P_menuname  '+
-    '  Where    bm=:p_bm      ';
-    adotemp11.Parameters.ParamByName('P_menuname').Value:=trim(Edit1.Text);
-    adotemp11.Parameters.ParamByName('p_bm').Value:=bm;
-    adotemp11.ExecSQL;
-    //ADOQuery_power.Refresh;
-  end;
-
-  //ADOQuery_power.Locate('权限编号',bm,[loCaseInsensitive]) ;
-  adotemp11.Free;
-end;
-
 function TfrmPower.GETMAXMENUBM: STRING;
 var
   MAXMENUBM: string;
@@ -356,13 +268,6 @@ begin
   ADOtemp11.Free;
   MAXMENUBM:=rightstr('000'+inttostr(strtoint(MAXMENUBM)+1),3);
   result := MAXMENUBM;
-end;
-
-procedure TfrmPower.BitBtn13Click(Sender: TObject);
-begin
-//  if (MessageDlg('删除该记录后任何人都将无此权限,确实要删除吗？',mtWarning,[mbYes,mbNo],0)<>mrYes) then exit;
-
-//  DBGrid_power.DataSource.DataSet.Delete;
 end;
 
 procedure TfrmPower.MakeCombinChecklistbox;
@@ -481,7 +386,7 @@ VAR
 begin
   if not (((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent is TCheckListBox) then
   begin
-    MESSAGEDLG('"移除"功能异常,请联系软件开发商!',mtError,[MBOK],0);
+    MESSAGEDLG('功能异常,请联系软件开发商!',mtError,[MBOK],0);
     exit;
   end;
   
@@ -496,12 +401,13 @@ begin
     exit;
   end;
 
-  if not InputQuery('提示','请输入新权限名称',sTypeName) then exit;
-  sTypeName:=trim(sTypeName);
-
   s2:=CheckListBox.Items.Strings[i];
   b:=pos('   ',s2);
+  sTypeName:=TRIM(COPY(S2,b+3,MAXINT));
   s2:=copy(s2,1,b-1);
+
+  if not InputQuery('修改权限','请修改该权限名称',sTypeName) then exit;
+  sTypeName:=trim(sTypeName);
 
   adotemp11:=tadoquery.Create(nil);
   adotemp11.Connection:=ADOConnection1;
@@ -603,15 +509,134 @@ begin
   end;
 end;
 
-procedure TfrmPower.N6Click(Sender: TObject);
+procedure TfrmPower.BitBtn9Click(Sender: TObject);
 begin
-   if not ADOQuery_js.Active then exit;
-   if ADOQuery_js.RecordCount<=0 then exit;
+  if not ADOQuery_js.Active then exit;
+
+  ADOquery_js.Edit;
+  ADOquery_js.Append;
+  dbedtJSname.SetFocus;
+end;
+
+procedure TfrmPower.BitBtn1Click(Sender: TObject);
+begin
+  if not ADOQuery_js.Active then exit;
+  if ADOQuery_js.RecordCount<=0 then exit;
 
   if messagedlg('删除角色会删除属于该角色的用户的相应权限，确实要删除吗？',mtConfirmation,mbOKCancel,0)<>mrok then exit;
   
   ADOQuery_js.Edit;
   ADOQuery_js.Delete;
+
+  MakeCombinChecklistbox_JS;
+  CheckTheListBox_JS;
+end;
+
+procedure TfrmPower.DBEdtJSnameKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if not ADOQuery_js.Active then exit;
+  if ADOQuery_js.RecordCount<=0 then exit;
+
+  if pos('+',tedit(sender).Text)<>0 then
+  begin
+    messagedlg('非法字符("+")',mtinformation,[mbok],0);
+    ADOquery_js.Cancel;
+    tedit(sender).SetFocus;
+    exit;
+  end;
+
+  if key=13 then
+  begin
+    if trim(tedit(sender).text)='' then exit;
+    try
+      ADOquery_js.Edit;
+      ADOquery_js.Post;
+
+      MakeCombinChecklistbox_JS;
+      CheckTheListBox_JS;
+    except
+      messagedlg('该角色已存在！',mtinformation,[mbok],0);
+      ADOquery_js.Cancel;
+      tedit(sender).SetFocus;
+    end;
+  end;
+end;
+
+procedure TfrmPower.N3Click(Sender: TObject);
+VAR
+  i:integer;
+  s2:string;
+  b:integer;
+  CheckListBox:TCheckListBox;
+  adotemp11:tadoquery;
+begin
+  if not (((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent is TCheckListBox) then
+  begin
+    MESSAGEDLG('功能异常,请联系软件开发商!',mtError,[MBOK],0);
+    exit;
+  end;
+  
+  CheckListBox:=((Sender as TMenuItem).GetParentMenu as TPopupMenu).PopupComponent as TCheckListBox;
+
+  if CheckListBox.Items.Count<=0 then exit;
+  
+  i:=CheckListBox.ItemIndex;
+  if i<0 then
+  begin
+    MESSAGEDLG('请选择要删除的权限!',mtWarning,[MBOK],0);
+    exit;
+  end;
+
+  if (MessageDlg('删除该记录后任何人都将无此权限,确实要删除吗？',mtWarning,[mbYes,mbNo],0)<>mrYes) then exit;
+
+  s2:=CheckListBox.Items.Strings[i];
+  b:=pos('   ',s2);
+  s2:=copy(s2,1,b-1);
+
+  adotemp11:=tadoquery.Create(nil);
+  adotemp11.Connection:=ADOConnection1;
+    adotemp11.Close;
+    adotemp11.SQL.Clear;
+    adotemp11.SQL.Text:=' DELETE FROM menuitem  '+
+    '  Where    bm=:p_bm';
+    adotemp11.Parameters.ParamByName('p_bm').Value:=s2;
+    adotemp11.ExecSQL;
+    adotemp11.Free;
+
+        //=============更新主界面的组合项目CheckListBox=======================//
+        MakeCombinChecklistbox;
+        CheckTheListBox;
+        //====================================================================//
+end;
+
+procedure TfrmPower.N1Click(Sender: TObject);
+VAR
+  bm:string;
+  adotemp11:tadoquery;
+  sTypeName:string;
+begin
+  if not InputQuery('新增权限','请输入新权限名称',sTypeName) then exit;
+  sTypeName:=trim(sTypeName);
+
+    bm:=GETMAXMENUBM;
+  adotemp11:=tadoquery.Create(nil);
+  adotemp11.Connection:=ADOConnection1;
+    adotemp11.Close;
+    adotemp11.SQL.Clear;
+    adotemp11.SQL.Text:='Insert into menuitem ('+
+                        ' bm,menuname,SYSNAME) values ('+
+                        ' :P_bm,:P_menuname,:SYSNAME) ';
+    adotemp11.Parameters.ParamByName('P_bm').Value:=bm;
+    adotemp11.Parameters.ParamByName('P_menuname').Value:=sTypeName;
+    adotemp11.Parameters.ParamByName('SYSNAME').Value:=ComboBox1.Text;
+    adotemp11.ExecSQL;
+    adotemp11.Free;
+
+        //=============更新主界面的组合项目CheckListBox=======================//
+        MakeCombinChecklistbox;
+        CheckTheListBox;
+        //====================================================================//
 end;
 
 end.

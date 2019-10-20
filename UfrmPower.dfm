@@ -70,7 +70,6 @@ object frmPower: TfrmPower
           Height = 380
           Align = alClient
           DataSource = DataSource_js
-          PopupMenu = PopupMenu2
           ReadOnly = True
           TabOrder = 0
           TitleFont.Charset = ANSI_CHARSET
@@ -85,6 +84,7 @@ object frmPower: TfrmPower
           Width = 260
           Height = 90
           Align = alTop
+          BevelOuter = bvNone
           TabOrder = 1
           object Label2: TLabel
             Left = 0
@@ -120,61 +120,28 @@ object frmPower: TfrmPower
             TabOrder = 1
             OnKeyDown = DBEdtJSnameKeyDown
           end
+          object BitBtn1: TBitBtn
+            Left = 183
+            Top = 34
+            Width = 75
+            Height = 25
+            Caption = #21024#38500#35282#33394
+            TabOrder = 2
+            OnClick = BitBtn1Click
+          end
         end
       end
-      object GroupBox1: TGroupBox
+      object CheckListBox1: TCheckListBox
         Left = 264
         Top = 41
         Width = 510
         Height = 487
+        OnClickCheck = CheckListBox1ClickCheck
         Align = alClient
-        Caption = #26435#38480
+        Columns = 2
+        ItemHeight = 13
+        PopupMenu = PopupMenu1
         TabOrder = 2
-        object Panel3: TPanel
-          Left = 2
-          Top = 15
-          Width = 506
-          Height = 122
-          Align = alTop
-          TabOrder = 0
-          object BitBtn12: TBitBtn
-            Left = 145
-            Top = 58
-            Width = 58
-            Height = 25
-            Caption = #20445#23384#26435#38480
-            TabOrder = 0
-            OnClick = BitBtn12Click
-          end
-          object BitBtn13: TBitBtn
-            Left = 206
-            Top = 58
-            Width = 58
-            Height = 25
-            Caption = #21024#38500#26435#38480
-            TabOrder = 1
-            OnClick = BitBtn13Click
-          end
-          object Edit1: TEdit
-            Left = 84
-            Top = 86
-            Width = 180
-            Height = 21
-            TabOrder = 2
-          end
-        end
-        object CheckListBox1: TCheckListBox
-          Left = 2
-          Top = 137
-          Width = 506
-          Height = 348
-          OnClickCheck = CheckListBox1ClickCheck
-          Align = alClient
-          Columns = 2
-          ItemHeight = 13
-          PopupMenu = PopupMenu1
-          TabOrder = 1
-        end
       end
     end
     object TabSheet2: TTabSheet
@@ -232,6 +199,7 @@ object frmPower: TfrmPower
         Height = 528
         OnClickCheck = CheckListBox2ClickCheck
         Align = alClient
+        Columns = 2
         ItemHeight = 13
         TabOrder = 1
       end
@@ -274,6 +242,7 @@ object frmPower: TfrmPower
     Top = 297
     object N1: TMenuItem
       Caption = #26032#22686#26435#38480
+      OnClick = N1Click
     end
     object N2: TMenuItem
       Caption = #20462#25913#26435#38480
@@ -281,20 +250,7 @@ object frmPower: TfrmPower
     end
     object N3: TMenuItem
       Caption = #21024#38500#26435#38480
-    end
-  end
-  object PopupMenu2: TPopupMenu
-    Left = 164
-    Top = 249
-    object N4: TMenuItem
-      Caption = #26032#22686#35282#33394
-    end
-    object N5: TMenuItem
-      Caption = #20462#25913#35282#33394
-    end
-    object N6: TMenuItem
-      Caption = #21024#38500#35282#33394
-      OnClick = N6Click
+      OnClick = N3Click
     end
   end
 end
