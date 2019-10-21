@@ -58,6 +58,7 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure N3Click(Sender: TObject);
     procedure N1Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     function GETMAXMENUBM: STRING;
@@ -143,15 +144,23 @@ begin
 end;
 
 procedure TfrmPower.FormCreate(Sender: TObject);
-var
-  ADOQuery_Sys:tadoquery;
 begin
   MakeDBConn;
   
   ADOQuery_dep.Connection:=ADOConnection1;
   ADOQuery_js.Connection:=ADOConnection1;
   ADOQuery_zy.Connection:=ADOConnection1;
-  
+end;
+
+procedure TfrmPower.FormShow(Sender: TObject);
+var
+  ADOQuery_Sys:tadoquery;
+  ConfigIni:tinifile;
+  selSysName:integer;
+begin
+  pagecontrol1.ActivePageIndex:=0;
+
+  //加载系统名称begin
   ADOQuery_Sys:=tadoquery.Create(nil);
   ADOQuery_Sys.Connection:=ADOConnection1;
   ADOQuery_Sys.Close;
@@ -166,6 +175,15 @@ begin
   end;
   ADOQuery_Sys.Free;
 
+  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  selSysName:=configini.ReadInteger('Interface','selSysName',0);{记录选择的系统名称}
+  configini.Free;
+
+  ComboBox1.ItemIndex:=selSysName;
+  //加载系统名称end
+
+  MakeCombinChecklistbox;//加载权限勾选列表
+  
   ADOQuery_dep.Close;
   ADOQuery_dep.SQL.Clear;
   ADOQuery_dep.SQL.Text:='select * from CommCode where TypeName=''部门'' ';
@@ -174,14 +192,9 @@ begin
   ADOQuery_js.Close;
   ADOQuery_js.SQL.Clear;
   ADOQuery_js.SQL.Text:='select id as 唯一编号,jsmc as 角色,jsqx as 权限 from ryjs';
-  ADOQuery_js.Open;  
-end;
+  ADOQuery_js.Open;
 
-procedure TfrmPower.FormShow(Sender: TObject);
-begin
-  pagecontrol1.ActivePageIndex:=0;
-
-  MakeCombinChecklistbox_JS;
+  MakeCombinChecklistbox_JS;//加载角色勾选列表
 end;
 
 procedure TfrmPower.DBLookupComboBox1Click(Sender: TObject);
@@ -637,6 +650,17 @@ begin
         MakeCombinChecklistbox;
         CheckTheListBox;
         //====================================================================//
+end;
+
+procedure TfrmPower.FormDestroy(Sender: TObject);
+var
+  ConfigIni:tinifile;
+begin
+  ConfigIni:=tinifile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+
+  configini.WriteInteger('Interface','selSysName',ComboBox1.ItemIndex);{记录选择的系统名称}
+
+  configini.Free;
 end;
 
 end.
