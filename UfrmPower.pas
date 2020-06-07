@@ -337,7 +337,7 @@ end;
 
 procedure TfrmPower.CheckListBox1ClickCheck(Sender: TObject);
 var
-  i,b:integer;
+  i,b,j,m:integer;
   menu_bm,existr,aa,cc:string;
 begin
   i:=(Sender as TCheckListBox).ItemIndex;
@@ -385,6 +385,24 @@ begin
     ADOQuery_js.Edit;
     ADOQuery_js.FieldByName('权限').AsString:=aa;
     ADOQuery_js.Post;
+
+    //全部未选中,清空字段内容begin
+    m:=0;
+    for j:=0 to (Sender as TCheckListBox).Items.Count-1 do
+    begin
+      if (Sender as TCheckListBox).Checked[j] then
+      begin
+        inc(m);
+        break;
+      end;
+    end;
+    if m=0 then
+    begin
+      ADOQuery_js.Edit;
+      ADOQuery_js.FieldByName('权限').AsString:='';
+      ADOQuery_js.Post;
+    end;
+    //全部未选中,清空字段内容end
   end;
 end;
 
@@ -487,7 +505,7 @@ end;
 
 procedure TfrmPower.CheckListBox2ClickCheck(Sender: TObject);
 var
-  i:integer;
+  i,m,j:integer;
   aa,jsmc:string;
 begin
   i:=(Sender as TCheckListBox).ItemIndex;
@@ -519,6 +537,24 @@ begin
     ADOQuery_zy.Edit;
     ADOQuery_zy.FieldByName('所属角色').AsString:=aa;
     ADOQuery_zy.Post;
+
+    //全部未选中,清空字段内容begin
+    m:=0;
+    for j:=0 to (Sender as TCheckListBox).Items.Count-1 do
+    begin
+      if (Sender as TCheckListBox).Checked[j] then
+      begin
+        inc(m);
+        break;
+      end;
+    end;
+    if m=0 then
+    begin
+      ADOQuery_zy.Edit;
+      ADOQuery_zy.FieldByName('所属角色').AsString:='';
+      ADOQuery_zy.Post;
+    end;
+    //全部未选中,清空字段内容end
   end;
 end;
 

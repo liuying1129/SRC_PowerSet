@@ -24,7 +24,7 @@ object frmPower: TfrmPower
     Top = 0
     Width = 782
     Height = 556
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
