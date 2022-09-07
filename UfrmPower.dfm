@@ -51,7 +51,7 @@ object frmPower: TfrmPower
           Width = 121
           Height = 21
           DropDownCount = 20
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnChange = ComboBox1Change
         end
